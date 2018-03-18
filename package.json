@@ -1,0 +1,39 @@
+{
+  "name": "calendar-app",
+  "version": "1.0.0",
+  "description": "Number8 UI Developer Test",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack --mode production",
+    "start": "webpack-dev-server --mode development --output ./public/main.js"
+  },
+  "author": "Sindy Garcia",
+  "license": "MIT",
+  "dependencies": {
+    "gh-pages": "^1.1.0",
+    "isomorphic-fetch": "^2.2.1",
+    "prop-types": "^15.6.1",
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0",
+    "react-icons": "^2.2.7",
+    "react-scripts": "^1.1.1",
+    "webpack-cli": "^2.0.12"
+  },
+  "devDependencies": {
+    "autoprefixer-loader": "^3.2.0",
+    "babel-cli": "^6.26.0",
+    "babel-loader": "^7.1.4",
+    "babel-preset-latest": "^6.24.1",
+    "babel-preset-react": "^6.24.1",
+    "babel-preset-stage-0": "^6.24.1",
+    "css-loader": "^0.28.10",
+    "date-holidays": "^1.2.2",
+    "json-loader": "^0.5.7",
+    "node-sass": "^4.7.2",
+    "sass-loader": "^6.0.7",
+    "style-loader": "^0.20.3",
+    "webpack": "^4.1.1",
+    "webpack-dev-server": "^3.1.1"
+  }
+}
