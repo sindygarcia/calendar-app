@@ -10,8 +10,26 @@ const days = {
 	6: "Sa"
 };
 
+//Component for rendering the days
+class CalendarDay extends Component {	
+	//Adds Style depending on the day's type
+	componentWillMount(){
+		this.style={
+			backgroundColor: (this.props.date) 
+										? ( (this.props.date.getDay() == 0 || this.props.date.getDay() == 6 ) ? "Yellow" : "DarkSeaGreen" ) 
+										: "gray"
+		}
+	}
+
+	render(){
+		return (
+        	<li style={this.style}>{(this.props.date) ? this.props.date.getDate() : ""}</li>
+		)
+	}
+}
+
 export class Calendar extends Component {
-	contructor(props){
+	constructor(props){
 		super(props);
 		this.state = {
 			"startDate": props.startDate,
@@ -22,7 +40,7 @@ export class Calendar extends Component {
 	}
 
 	render(){
-		return {
+		return (
 			<div id="calendar">
 				<div className="calendar-header">
 	       			<ul>
@@ -39,9 +57,10 @@ export class Calendar extends Component {
 				  	<li>{days[6]}</li>
        			</ul>
        			<ul className="calendar-days">
+       				<CalendarDay />
        			</ul>
 			</div>
-		}
+		)
 	}
 }
 

@@ -83,7 +83,7 @@ class App extends Component {
 	}
 
 	render(){
-		return {
+		return (
 		    <div>
 		   		<form onSubmit={this.renderCalendar} className="calendar-params">
 			   		<label>Start Date</label>
@@ -111,8 +111,7 @@ class App extends Component {
 		   			<Calendar />
 		   		</div>
 		   	</div>
-		   	}
-		}
+		)
 	}
 }
 
