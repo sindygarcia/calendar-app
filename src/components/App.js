@@ -132,7 +132,7 @@ class App extends Component {
 		this.diffDay = parseInt(this.state.startDate.split("/")[1]);
 		this.monthDays =  months[this.initialMonth - 1].days; 
 		
-		var monthsToRender = this.diffDay === 1 && this.monthDays == this.countDays ? 1 : Math.ceil((this.diffDay + this.countDays)/30); 
+		var monthsToRender = this.diffDay === 1 && this.monthDays == this.countDays ? 1 : Math.ceil((this.diffDay + this.countDays)/31); 
 		var countMonths = new Date((this.initialMonth) + "/01/" + currentYear);
 
 		//Iterates through every month that's going to be rendered to calculate how many days should 
