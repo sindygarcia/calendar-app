@@ -75,7 +75,9 @@ class App extends Component {
 		this.validateInputs = this.validateInputs.bind(this);
 		this.renderCalendar = this.renderCalendar.bind(this);
 		this.calculateDays = this.calculateDays.bind(this);
-
+		this.processCalculation = this.processCalculation.bind(this);
+		
+		this.loadHolidays = this.loadHolidays.bind(this);
 		this.daysPerCalendar = {};
 	}
 	
@@ -117,12 +119,69 @@ class App extends Component {
 			this.setState({
 				showCalendar : true
 			});
+			this.calculateDays();
 		}
 	}
 
+	 //Calculates Months and days that need to be display in order to show 
+    //number of days given by the user
 	calculateDays(){
+		this.daysPerCalendar[currentYear] = {};
+		this.countDays = parseInt(this.state.numberDays);
+		this.initialMonth = parseInt(this.state.startDate.split("/")[0]);
+		this.diffDay = parseInt(this.state.startDate.split("/")[1]);
+		this.monthDays =  months[this.initialMonth - 1].days; 
+		
+		var monthsToRender = this.diffDay === 1 && this.monthDays == this.countDays ? 1 : Math.ceil((this.diffDay + this.countDays)/30); 
+		var countMonths = new Date((this.initialMonth) + "/01/" + currentYear);
 
+		//Iterates through every month that's going to be rendered to calculate how many days should 
+		// be displayed on each one
+		Array.apply(0, Array(monthsToRender)).map((m, i) => {
+			if(i != 0 ){ countMonths.setDate(countMonths.getDate() + 31); }
+
+			if(this.daysPerCalendar[countMonths.getFullYear()]){
+				this.processCalculation(countMonths.getMonth(), i);
+			}else{
+				currentYear = countMonths.getFullYear();
+				this.daysPerCalendar[currentYear] = {};
+				this.processCalculation(countMonths.getMonth(), i);
+			}
+
+		});
+	}  
+
+	//Function called in CalculateDays
+	//Params: m (integer) = month index (e.g: 1 for February, 2 for March and so on)
+	// 		  i (integer) = index of the element per Year 
+	processCalculation(m, i){
+		if(i === 0){
+			if(this.countDays > (months[m].days - this.diffDay)){
+				this.daysPerCalendar[currentYear][i] = [m, months[m].days - this.diffDay, this.state.startDate];
+				this.countDays -= this.daysPerCalendar[currentYear][i][1];
+			}else{
+				this.daysPerCalendar[currentYear][i] = [m, this.countDays - 1, this.state.startDate];
+			}
+		}else{
+			if(this.countDays > (months[m].days)){
+				this.daysPerCalendar[currentYear][i] = [m, months[m].days, (m + 1 +"/01/"+ currentYear)];
+				this.countDays -= this.daysPerCalendar[currentYear][i][1];
+			}else{
+				this.daysPerCalendar[currentYear][i] = [m, this.countDays - 1, (m + 1 +"/01/"+ currentYear)];
+			}
+		}
 	}
+
+	//Makes the request to the Holidays API to get the holidays given a Country Code and a year
+	//Sent 2017 as year because the free version does not allow to request the current year
+	loadHolidays(){
+     	fetch('https://holidayapi.com/v1/holidays?key=65948068-d62c-4177-aca1-f38c004ddc0e&country=' + this.state.countryCode.toUpperCase() + '&year=2017')
+	        .then(response => response.json())
+	        .then( (responseJson) => {
+	            this.setState({holidays: responseJson.holidays})
+	            // this.holidays = responseJson.holidays;
+	    })
+    } 
 
 	render(){
 		return (
@@ -157,9 +216,20 @@ class App extends Component {
 		   		<div className="render-calendars">
 			   		{	
 			   			(this.state.showCalendar) ? 
-		   					<Calendar />
-		   				: null
-			   		}
+			   				 Object.keys(this.daysPerCalendar).map((year, j) => 
+								Object.keys(this.daysPerCalendar[year]).map((month,i) => 
+									 <Calendar key={i} 
+											startDate={this.daysPerCalendar[year][month][2]}
+								 			monthDays={months[this.daysPerCalendar[year][month][0]].days}
+								 			monthName={months[this.daysPerCalendar[year][month][0]].name}
+								 			daysPerCalendar={this.daysPerCalendar[year][month][1]}
+								 			currentYear={year}
+								 			startsOnDate={(i === 0) ? true : false}
+								 			countryCode={this.state.countryCode} />
+								)
+							)
+				   		: null
+			   		}	 
 		   		</div>
 		   	</div>
 		)

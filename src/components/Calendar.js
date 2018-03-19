@@ -35,7 +35,8 @@ export class Calendar extends Component {
 			"startDate": props.startDate,
 			"currentYear": props.currentYear,
 			"monthDays": props.monthDays,
-			"monthName": props.monthName
+			"monthName": props.monthName,
+			"startsOnDate": props.startsOnDate
 		};
 
 
@@ -54,7 +55,7 @@ export class Calendar extends Component {
 			<div id="calendar">
 				<div className="calendar-header">
 	       			<ul>
-	       				<li>{this.state.monthName}<br/><span>{this.state.actualYear}</span></li>
+	       				<li>{this.state.monthName}<br/><span>{this.state.currentYear}</span></li>
 	       			</ul>
 	       		</div>
        			<ul className="calendar-weekdays">
@@ -68,10 +69,17 @@ export class Calendar extends Component {
        			</ul>
        			<ul className="calendar-days">
        			{	      					
-       					Array.apply(0, Array(this.state.monthDays + this.startDayPos)).map((day,index) =>
-       						<CalendarDay />
+       					Array.apply(0, Array(this.state.monthDays + this.startDayPos)).map((day,index) => 
+       						(this.state.startsOnDate) ?
+       							(index >= this.startDayPos && this.dayBefore <= this.lastDate) ?
+       								 <CalendarDay key={index} date={new Date(this.dayBefore.setDate(this.dayBefore.getDate() + 1))}/> 
+       							: <CalendarDay key={index}/>
+       						 :
+       						(index >= this.startDayPos && this.dayBefore < this.lastDate) ?
+       								 <CalendarDay key={index} date={new Date(this.dayBefore.setDate(this.dayBefore.getDate() + 1))}/> 
+       							: <CalendarDay key={index}/>
        					)
-       			}
+       				}
        			</ul>
 			</div>
 		)
