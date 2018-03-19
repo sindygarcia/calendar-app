@@ -37,6 +37,16 @@ export class Calendar extends Component {
 			"monthDays": props.monthDays,
 			"monthName": props.monthName
 		};
+
+
+		this.startDayDate = new Date(this.props.startDate);
+		this.startDayPos = this.startDayDate.getDay();
+		this.lastDate = new Date(this.props.startDate);
+		this.lastDate.setDate(this.startDayDate.getDate() + parseInt(this.props.daysPerCalendar - 1));
+		this.dayBefore = new Date(this.props.startDate);
+		this.dayBefore.setDate(this.startDayDate.getDate() - 1);
+		
+		console.log(this.props.monthName + " -> days: " + this.props.monthDays + " start: " + this.startDayPos + " last: " + this.lastDate)
 	}
 
 	render(){
@@ -57,7 +67,11 @@ export class Calendar extends Component {
 				  	<li>{days[6]}</li>
        			</ul>
        			<ul className="calendar-days">
-       				<CalendarDay />
+       			{	      					
+       					Array.apply(0, Array(this.state.monthDays + this.startDayPos)).map((day,index) =>
+       						<CalendarDay />
+       					)
+       			}
        			</ul>
 			</div>
 		)

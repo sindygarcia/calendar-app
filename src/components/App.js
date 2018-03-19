@@ -72,14 +72,56 @@ class App extends Component {
 		}
 
 		this.setChange = this.setChange.bind(this);
+		this.validateInputs = this.validateInputs.bind(this);
+		this.renderCalendar = this.renderCalendar.bind(this);
+		this.calculateDays = this.calculateDays.bind(this);
+
+		this.daysPerCalendar = {};
 	}
 	
 	//Track the changes for every element in the form
 	setChange(e){
+		this.daysPerCalendar = {};
 		this.setState({
 			showCalendar: false,
 			[e.target.name]: e.target.value
 		});
+		this.validateInputs(e.target.name, e.target.value);
+	}
+
+	validateInputs(name, value){
+		let validDate = this.state.validDate;
+		let validNumberDays = this.state.validNumberDays;
+
+		switch(name){
+			case "startDate":
+				validDate = value.match(/[0-9]{2}\/[0-9]{2}\/[0-9]{4}/) ? true : false;
+				break;
+			case "numberDays":
+				validNumberDays = value > 0
+				break;
+			default:
+				break;
+		}
+
+		this.setState({
+			validDate,
+			validNumberDays
+		})
+	}
+
+	//Changes the state property value to allow the calendar rendering 
+	renderCalendar(e){
+		e.preventDefault();
+		if(this.state.validDate && this.state.validNumberDays){
+			this.setState({
+				showCalendar : true
+			});
+		}
+	}
+
+	calculateDays(){
+
 	}
 
 	render(){
@@ -107,8 +149,17 @@ class App extends Component {
 			   				required/>
 			   		<button>Render Calendar</button>
 		   		</form>
+		   		<div className="form-validation">
+		   			{
+		   				(this.state.validDate === false || this.state.validNumberDays === false) ? <span>Start Date must be in the format "mm/dd/yyyy", Number of Days should be greater than 0</span> : null
+		   			}
+		   		</div>
 		   		<div className="render-calendars">
-		   			<Calendar />
+			   		{	
+			   			(this.state.showCalendar) ? 
+		   					<Calendar />
+		   				: null
+			   		}
 		   		</div>
 		   	</div>
 		)
