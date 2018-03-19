@@ -54,9 +54,6 @@ const months = {
 	}
 };
 
-//Tracking current year
-var currentYear = new Date().getFullYear();
-
 class App extends Component {
 	constructor(props){
 		super(props);
@@ -71,6 +68,8 @@ class App extends Component {
 			holidays:{}
 		}
 
+
+		this.currentYear = new Date().getFullYear();
 		this.setChange = this.setChange.bind(this);
 		this.validateInputs = this.validateInputs.bind(this);
 		this.renderCalendar = this.renderCalendar.bind(this);
@@ -84,6 +83,7 @@ class App extends Component {
 	//Track the changes for every element in the form
 	setChange(e){
 		this.daysPerCalendar = {};
+		this.currentYear = new Date().getFullYear();
 		this.setState({
 			showCalendar: false,
 			[e.target.name]: e.target.value
@@ -126,14 +126,14 @@ class App extends Component {
 	 //Calculates Months and days that need to be display in order to show 
     //number of days given by the user
 	calculateDays(){
-		this.daysPerCalendar[currentYear] = {};
+		this.daysPerCalendar[this.currentYear] = {};
 		this.countDays = parseInt(this.state.numberDays);
 		this.initialMonth = parseInt(this.state.startDate.split("/")[0]);
 		this.diffDay = parseInt(this.state.startDate.split("/")[1]);
 		this.monthDays =  months[this.initialMonth - 1].days; 
 		
 		var monthsToRender = this.diffDay === 1 && this.monthDays == this.countDays ? 1 : Math.ceil((this.diffDay + this.countDays)/31); 
-		var countMonths = new Date((this.initialMonth) + "/01/" + currentYear);
+		var countMonths = new Date((this.initialMonth) + "/01/" + this.currentYear);
 
 		//Iterates through every month that's going to be rendered to calculate how many days should 
 		// be displayed on each one
@@ -143,8 +143,8 @@ class App extends Component {
 			if(this.daysPerCalendar[countMonths.getFullYear()]){
 				this.processCalculation(countMonths.getMonth(), i);
 			}else{
-				currentYear = countMonths.getFullYear();
-				this.daysPerCalendar[currentYear] = {};
+				this.currentYear = countMonths.getFullYear();
+				this.daysPerCalendar[this.currentYear] = {};
 				this.processCalculation(countMonths.getMonth(), i);
 			}
 
@@ -157,17 +157,17 @@ class App extends Component {
 	processCalculation(m, i){
 		if(i === 0){
 			if(this.countDays > (months[m].days - this.diffDay)){
-				this.daysPerCalendar[currentYear][i] = [m, months[m].days - this.diffDay, this.state.startDate];
-				this.countDays -= this.daysPerCalendar[currentYear][i][1];
+				this.daysPerCalendar[this.currentYear][i] = [m, months[m].days - this.diffDay, this.state.startDate];
+				this.countDays -= this.daysPerCalendar[this.currentYear][i][1];
 			}else{
-				this.daysPerCalendar[currentYear][i] = [m, this.countDays - 1, this.state.startDate];
+				this.daysPerCalendar[this.currentYear][i] = [m, this.countDays - 1, this.state.startDate];
 			}
 		}else{
 			if(this.countDays > (months[m].days)){
-				this.daysPerCalendar[currentYear][i] = [m, months[m].days, (m + 1 +"/01/"+ currentYear)];
-				this.countDays -= this.daysPerCalendar[currentYear][i][1];
+				this.daysPerCalendar[this.currentYear][i] = [m, months[m].days, (m + 1 +"/01/"+ this.currentYear)];
+				this.countDays -= this.daysPerCalendar[this.currentYear][i][1];
 			}else{
-				this.daysPerCalendar[currentYear][i] = [m, this.countDays - 1, (m + 1 +"/01/"+ currentYear)];
+				this.daysPerCalendar[this.currentYear][i] = [m, this.countDays - 1, (m + 1 +"/01/"+ this.currentYear)];
 			}
 		}
 	}
